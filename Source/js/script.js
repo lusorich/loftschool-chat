@@ -7,24 +7,31 @@ let userNick = document.getElementById('input-nick');
 let button = document.querySelector('.form__button');
 let usersAuthData;
 
-button.addEventListener('click', (e) => {
-	e.preventDefault();
+xhr.onload = () => {
+    let responseJson = xhr.response;
+    let responseParse = JSON.parse(responseJson);
+    usersAuthData = responseParse.users;
+}
 
-	for (let i = 0; i < usersAuthData.length; i++) {
-		if (usersAuthData[i].name === userName.value && usersAuthData[i].nick === userNick.value) {
-			document.location.replace = 'index.html';
-		}
-	}
+
+button.addEventListener('click', (e) => {
+    e.preventDefault();
+
+    for (let i = 0; i < usersAuthData.length; i++) {
+        if (usersAuthData[i].name === userName.value && usersAuthData[i].nick === userNick.value) {
+            document.cookie = `${usersAuthData[i].name}=active`;
+            console.log(document.location);
+            document.location.replace('/comment.html');
+        } 
+    }
 })
 
-xhr.onload = () => {
-	let responseJson = xhr.response;
-	let responseParse = JSON.parse(responseJson);
-	usersAuthData = responseParse.users;
+if (window.performance) {
+
+  if (performance.navigation.type == 1) {
+    document.location.replace('index.html');
+  }
 }
-
-
-
-window.onload = () => {
-	document.location.replace('auth.html');
-}
+//window.onload = () => {
+//	document.location.replace('auth.html');
+//}
