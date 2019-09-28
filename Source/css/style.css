@@ -11,7 +11,7 @@ body {
 }
 
 .container {
-	display: flex;
+	display: none;
 }
 
 .wrapper-left {
@@ -21,8 +21,10 @@ body {
 }
 
 .wrapper-right {
+	display: flex;
 	width: 75%;
 	height: 100vh;
+	background-color: #0e1621;
 }
 .wrapper-auth {
 	display: flex;
@@ -67,12 +69,12 @@ body {
 	padding: 12px;
     margin: 0;
     background-color: #5288c1;
-    border-radius: 15px;
-    border: 0;
-    width: 130px;
-    text-transform: uppercase;
     color: #ffffff;
+    border: 0;
+    border-radius: 15px;
+    width: 130px;
     font-size: 16px;
+    text-transform: uppercase;
     cursor: pointer;
 }
 
@@ -82,4 +84,51 @@ body {
 
 .wrapper-img {
 	text-align: center;
+}
+
+.wrapper-send {
+	align-self: flex-end;
+	margin-bottom: 80px;
+	padding: 0 20px;
+	width: 100%;
+}
+
+.users__list {
+	list-style: none;
+	display: flex;
+	flex-direction: column;
+}
+
+.users__name {
+	color: #ffffff;
+	font-size: 14px;
+	line-height: 24px;
+}
+
+.users__item {
+	display: flex;
+}
+
+.message {
+	padding: 20px 0 20px 20px;
+	margin: 0;
+    width: 65%;
+    border: 0;
+}
+
+.button--send {
+	width: 20%;
+    margin: 0 0 0 80px;
+    padding: 12px;
+    background-color: #5288c1;
+    color: #ffffff;
+    border: 0;
+    border-radius: 15px;
+    font-size: 16px;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.users__name--active {
+	font-size: 20px;
 }
