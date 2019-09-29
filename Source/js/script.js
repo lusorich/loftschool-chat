@@ -13,7 +13,7 @@ let usersAuthData;
 let arrayActiveUsers = {
 	activeUsers: []
 };
-let ola = document.querySelector('.users__list');
+let userList = document.querySelector('.users__list');
 
 xhr.onload = () => {
     let responseJson = xhr.response;
@@ -44,7 +44,7 @@ buttonAuth.addEventListener('click', (e) => {
     let cookies = getCookies();
 
 	for (key in cookies) {
-		if (key !== userAuthorised) {
+		if (key !== userAuthorised && !key.includes('comment')) {
 			let keyName = {name: `${key}`};
 			arrayActiveUsers.activeUsers.push(keyName);
 		}
@@ -54,10 +54,44 @@ buttonAuth.addEventListener('click', (e) => {
 	var templateSource = template.innerHTML;
     var rend = Handlebars.compile(templateSource);
     var templateHtml = rend(arrayActiveUsers);
-    ola.innerHTML += templateHtml;
+    userList.innerHTML += templateHtml;
+});
 
-	console.log(arrayActiveUsers);
-})
+let buttonSend = document.querySelector('.button--send');
+
+let cookiesAfterSend = getCookies();
+let i;
+
+if (Number(cookiesAfterSend[`msgNumber${sessionStorage.getItem('active')}`] > 0)) {
+	i = Number(cookiesAfterSend[`msgNumber${sessionStorage.getItem('active')}`]);
+} else {
+	i = 0;
+}
+
+console.log(i);
+console.log(cookiesAfterSend[`msgNumber${sessionStorage.getItem('active')}`]);
+
+let wrapperMessage = document.querySelector('.wrapper-message');
+
+buttonSend.addEventListener('click', (e) => {
+	e.preventDefault();
+	i++;
+
+	let inputMessage = document.querySelector('.message');
+	document.cookie = `comment${i}${sessionStorage.getItem('active')}=${inputMessage.value}`;
+	document.cookie = `msgNumber${sessionStorage.getItem('active')}=${i}`;
+
+	for (key in cookiesAfterSend) {
+		if (key.includes('comment') && key.includes(`${sessionStorage.getItem('active')}`) && key.includes(`${i}`)) {
+			let div = document.createElement('div');
+			div.textContent = 'Hola';
+			wrapperMessage.appendChild(div);
+		}
+	}
+
+});
+
+
 
 let delete_cookie = function(name) {
     document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:01 GMT;`;

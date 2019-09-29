@@ -22,6 +22,7 @@ body {
 
 .wrapper-right {
 	display: flex;
+	flex-direction: column;
 	width: 75%;
 	height: 100vh;
 	background-color: #0e1621;
@@ -87,10 +88,11 @@ body {
 }
 
 .wrapper-send {
-	align-self: flex-end;
-	margin-bottom: 80px;
 	padding: 0 20px;
 	width: 100%;
+	box-sizing: border-box;
+	top: 90%;
+    position: relative;
 }
 
 .users__list {
@@ -131,4 +133,14 @@ body {
 
 .users__name--active {
 	font-size: 20px;
+}
+
+.wrapper-message {
+	position: absolute;
+	margin: 40px 0 0 150px;
+	color: #ffffff;
+}
+
+.wrapper-message div {
+	margin-bottom: 60px;
 }
