@@ -13,9 +13,6 @@ let usersAuthData;
 let arrayActiveUsers = {
     activeUsers: []
 };
-let arrayMessage = {
-    messageUsers: []
-};
 let userList = document.querySelector('.users__list');
 
 xhr.onload = () => {
@@ -47,7 +44,7 @@ buttonAuth.addEventListener('click', (e) => {
     let cookies = getCookies();
 
     for (key in cookies) {
-        if (key !== userAuthorised && !key.includes('comment')) {
+        if (key !== userAuthorised && !key.includes('comment') && !key.includes('date') && !key.includes('msg')) {
             let keyName = {
                 name: `${key}`
             };
@@ -60,45 +57,120 @@ buttonAuth.addEventListener('click', (e) => {
     var rend = Handlebars.compile(templateSource);
     var templateHtml = rend(arrayActiveUsers);
     userList.innerHTML += templateHtml;
+
+    i = getNumber();
 });
 
 let buttonSend = document.querySelector('.button--send');
 
 let wrapperMessage = document.querySelector('.wrapper-message');
-let i;
 
-let cookiesAfterSend = getCookies();
+function getNumber() {
 
-if (Number(cookiesAfterSend[`msgNumber${sessionStorage.getItem('active')}`] > 0)) {
-    i = Number(cookiesAfterSend[`msgNumber${sessionStorage.getItem('active')}`]);
-} else {
-    i = 0;
+    let cookiesAfterSend = getCookies();
+
+    console.log(cookiesAfterSend[`msgNumber${sessionStorage.getItem('active')}`]);
+
+    if (Number(cookiesAfterSend[`msgNumber${sessionStorage.getItem('active')}`] > 0)) {
+        return Number(cookiesAfterSend[`msgNumber${sessionStorage.getItem('active')}`]);
+    } else {
+        return 1;
+    }
+
 }
+
+let i = getNumber();
 
 buttonSend.addEventListener('click', (e) => {
     e.preventDefault();
 
-
+    let date = new Date((Date.now() + 86400e3));
+    date = date.toUTCString();
 
     let inputMessage = document.querySelector('.message');
-    document.cookie = `comment${i}${sessionStorage.getItem('active')}=${inputMessage.value}`;
+
+    document.cookie = `comment${i}${sessionStorage.getItem('active')}=${inputMessage.value}; expires=${date}`;
+    document.cookie = `date${i}${sessionStorage.getItem('active')}=${date}`;
     document.cookie = `msgNumber${sessionStorage.getItem('active')}=${i}`;
-    arrayMessage.messageUsers.push({name: })
-
-
-    cookiesAfterSend = getCookies();
-    for (key in cookiesAfterSend) {
-        if (key.includes('comment') && key.includes(`${sessionStorage.getItem('active')}`) && key.includes(`${i}`)) {
-            let div = document.createElement('div');
-            div.textContent = 'Hola';
-            wrapperMessage.appendChild(div);
-        }
-    }
 
     i++;
 });
 
+function render(data) {
 
+    for (let y = 0; y < data.length; y++) {
+        let div = document.createElement('div');
+        let span = document.createElement('span');
+        let span2 = document.createElement('span');
+        let p = document.createElement('p');
+        span.textContent = data[y].name;
+        span2.textContent = data[y].date;
+        p.textContent = data[y].msg;
+        div.appendChild(span);
+        div.appendChild(span2);
+        div.appendChild(p);
+        wrapperMessage.appendChild(div);
+    }
+
+}
+
+
+function getComment(name, num) {
+    let cook = getCookies();
+
+    for (key in cook) {
+        if (key.includes(`${num}`) && key.includes(`${name}`) && key.includes('comment')) {
+            return cook[`comment${num}${name}`];
+        }
+    }
+}
+
+
+function getDataFromCookies() {
+
+    let arrayMessage = {
+        messageUsers: []
+    };
+
+    let cookie = getCookies();
+
+    let z = 0;
+    let userComment = '';
+
+
+    for (key in cookie) {
+
+        if (key.includes('msgNumber')) {
+                z += Number(cookie[key]);
+        }
+    }
+
+    for (let w = 1; w <= z; w++) {
+
+        for (key in cookie) {
+            if (key.includes('date') && key.includes(`${w}`)) {
+
+                let keyParse = key.split(`date${w}`);
+                let msg = getComment(keyParse[1], w);
+
+                arrayMessage.messageUsers.push({
+                    date: `${cookie[`date${w}${keyParse[1]}`]}`,
+                    name: `${keyParse[1]}`,
+                    msg: `${msg}`
+
+                });
+            }
+        }
+    }
+    console.log(arrayMessage.messageUsers);
+    render(arrayMessage.messageUsers);
+}
+
+setInterval(() => {
+    if (authPage.style.display === 'none') {
+        getDataFromCookies();
+    }
+}, 300000);
 
 let delete_cookie = function(name) {
     document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
