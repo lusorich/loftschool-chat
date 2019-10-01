@@ -5,7 +5,6 @@ xhr.send();
 let userName = document.getElementById('input-name');
 let userNick = document.getElementById('input-nick');
 let userNameActive = document.querySelector('.users__name--active')
-let userImgActive = document.querySelector('.users__img--active');
 let buttonAuth = document.querySelector('.form__button');
 let authPage = document.querySelector('.main-auth');
 let commentPage = document.querySelector('.container');
@@ -20,6 +19,7 @@ xhr.onload = () => {
     let responseParse = JSON.parse(responseJson);
     usersAuthData = responseParse.users;
 }
+
 
 buttonAuth.addEventListener('click', (e) => {
     e.preventDefault();
@@ -44,7 +44,7 @@ buttonAuth.addEventListener('click', (e) => {
     let cookies = getCookies();
 
     for (key in cookies) {
-        if (key !== userAuthorised && !key.includes('comment') && !key.includes('date') && !key.includes('msg')) {
+        if (key !== userAuthorised && !key.includes('comment') && !key.includes('date') && !key.includes('msg') && !key.includes('undefined')) {
             let keyName = {
                 name: `${key}`
             };
@@ -141,7 +141,7 @@ function getDataFromCookies() {
     for (key in cookie) {
 
         if (key.includes('msgNumber')) {
-                z += Number(cookie[key]);
+            z += Number(cookie[key]);
         }
     }
 
@@ -170,7 +170,22 @@ setInterval(() => {
     if (authPage.style.display === 'none') {
         getDataFromCookies();
     }
-}, 300000);
+}, 30000);
+
+
+
+setInterval(() => {
+    if (authPage.style.display === 'none') {
+
+        var userImgActive = document.querySelector('.users__img--active');
+
+        userImgActive.addEventListener('click', (e) => {
+            popup.style.display = 'block';
+            console.log('1');
+        })
+    }
+}, 3000);
+
 
 let delete_cookie = function(name) {
     document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
@@ -203,3 +218,43 @@ function getCookies() {
 
     return cookies;
 }
+
+let dropIn = document.querySelector('.popup__input');
+let url;
+
+function drop(e) {
+    e.stopPropagation();
+    e.preventDefault();
+
+    let reader = new FileReader()
+    let file = e.dataTransfer.files;
+    url = URL.createObjectURL(file[0]);
+
+    if (file[0].size > 512000) {
+        alert('Файл должен быть меньше 512кб')
+    }
+
+    dropIn.style.backgroundImage = `url(${url})`;
+    console.log(url);
+
+}
+
+let popup = document.querySelector('.popup');
+let popupClose = document.querySelector('.popup__close');
+let popupSave = document.querySelector('.popup__img-save');
+
+popupClose.addEventListener('click', () => {
+    popup.style.display = 'none';
+})
+
+popupSave.addEventListener('click', () => {
+
+    if (url === undefined) {
+        alert('Нечего сохранять');
+    }
+
+    document.cookie = `URL${sessionStorage.getItem('active')}=${url}`;
+    popup.style.display = 'none';
+})
+
+dropIn.addEventListener('drop', drop);

@@ -80,7 +80,6 @@
       <div class="wrapper-left">
         <ul class="users__list users__list--active">
           <li class="users__item users__item--active">
-          	<input class="users__file" type="file" name="file" id="file" >
             <img class="users__img users__img--active" src="" alt="" width="150" height="150">
             <h2 class="users__name users__name--active"></h2>
           </li>
@@ -101,9 +100,15 @@
         </div>
         <div class="wrapper-send">
           <input class="message" type="text" value placeholder="Введите сообщение">
-          <button class="button--send" type="button">Отправить</button> 
+          <button class="button button--send" type="button">Отправить</button> 
         </div>        
       </div>
+    </div>
+
+    <div class="popup">
+		<input class="popup__input" id="input-file" type="file" accept="image/jpeg" onchange="drop(e)">
+		<button class="button popup__close">Отмена</button>
+		<button class="button popup__img-save">Загрузить</button>
     </div>
     <script src="js/script.js"></script>
   </body>
