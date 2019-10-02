@@ -33,22 +33,27 @@ buttonAuth.addEventListener('click', (e) => {
         }
     }
 
+    getActiveUsers();
+
+    i = getNumber();
+});
+
+function getActiveUsers() {
+    let cookies = getCookies();
     let userAuthorised = sessionStorage.getItem('active');
 
-    for (let i = 0; i < usersAuthData.length; i++) {
-        if (usersAuthData[i].name === userAuthorised) {
-            userNameActive.textContent = userAuthorised;
-        }
-    }
-
-    let cookies = getCookies();
-
     for (key in cookies) {
-        if (key !== userAuthorised && !key.includes('comment') && !key.includes('date') && !key.includes('msg') && !key.includes('undefined')) {
+        if (key !== userAuthorised && !key.includes('comment') && !key.includes('date') && !key.includes('msg') && !key.includes('undefined') && !key.includes('URL')) {
             let keyName = {
                 name: `${key}`
             };
             arrayActiveUsers.activeUsers.push(keyName);
+        }
+    }
+
+    for (let i = 0; i < usersAuthData.length; i++) {
+        if (usersAuthData[i].name === userAuthorised) {
+            userNameActive.textContent = userAuthorised;
         }
     }
 
@@ -57,9 +62,9 @@ buttonAuth.addEventListener('click', (e) => {
     var rend = Handlebars.compile(templateSource);
     var templateHtml = rend(arrayActiveUsers);
     userList.innerHTML += templateHtml;
+}
 
-    i = getNumber();
-});
+
 
 let buttonSend = document.querySelector('.button--send');
 
@@ -68,8 +73,6 @@ let wrapperMessage = document.querySelector('.wrapper-message');
 function getNumber() {
 
     let cookiesAfterSend = getCookies();
-
-    console.log(cookiesAfterSend[`msgNumber${sessionStorage.getItem('active')}`]);
 
     if (Number(cookiesAfterSend[`msgNumber${sessionStorage.getItem('active')}`] > 0)) {
         return Number(cookiesAfterSend[`msgNumber${sessionStorage.getItem('active')}`]);
@@ -92,11 +95,14 @@ buttonSend.addEventListener('click', (e) => {
     document.cookie = `comment${i}${sessionStorage.getItem('active')}=${inputMessage.value}; expires=${date}`;
     document.cookie = `date${i}${sessionStorage.getItem('active')}=${date}`;
     document.cookie = `msgNumber${sessionStorage.getItem('active')}=${i}`;
-
     i++;
+    inputMessage.value = '';
 });
 
 function render(data) {
+
+    wrapperMessage.innerHTML = '';
+
 
     for (let y = 0; y < data.length; y++) {
         let div = document.createElement('div');
@@ -157,12 +163,10 @@ function getDataFromCookies() {
                     date: `${cookie[`date${w}${keyParse[1]}`]}`,
                     name: `${keyParse[1]}`,
                     msg: `${msg}`
-
                 });
             }
         }
     }
-    console.log(arrayMessage.messageUsers);
     render(arrayMessage.messageUsers);
 }
 
@@ -170,7 +174,7 @@ setInterval(() => {
     if (authPage.style.display === 'none') {
         getDataFromCookies();
     }
-}, 30000);
+}, 3000);
 
 
 
@@ -181,7 +185,6 @@ setInterval(() => {
 
         userImgActive.addEventListener('click', (e) => {
             popup.style.display = 'block';
-            console.log('1');
         })
     }
 }, 3000);
@@ -235,8 +238,6 @@ function drop(e) {
     }
 
     dropIn.style.backgroundImage = `url(${url})`;
-    console.log(url);
-
 }
 
 let popup = document.querySelector('.popup');
@@ -254,6 +255,7 @@ popupSave.addEventListener('click', () => {
     }
 
     document.cookie = `URL${sessionStorage.getItem('active')}=${url}`;
+
     popup.style.display = 'none';
 })
 
