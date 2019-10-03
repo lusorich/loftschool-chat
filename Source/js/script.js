@@ -12,7 +12,9 @@ let usersAuthData;
 let arrayActiveUsers = {
     activeUsers: []
 };
+let imgNameActive = document.querySelector('.users__img--active');
 let userList = document.querySelector('.users__list');
+let imgUsers = document.querySelector('.users__img');
 
 xhr.onload = () => {
     let responseJson = xhr.response;
@@ -41,13 +43,21 @@ buttonAuth.addEventListener('click', (e) => {
 function getActiveUsers() {
     let cookies = getCookies();
     let userAuthorised = sessionStorage.getItem('active');
+    let divNumActiveUsers = document.querySelector('.users__number');
+    let NumActiveUsers = 0;
 
     for (key in cookies) {
         if (key !== userAuthorised && !key.includes('comment') && !key.includes('date') && !key.includes('msg') && !key.includes('undefined') && !key.includes('URL')) {
             let keyName = {
-                name: `${key}`
+                name: `${key}`,
+                url: cookies[`URL${key}`]
             };
+            NumActiveUsers++;
             arrayActiveUsers.activeUsers.push(keyName);
+        }
+        if (key.includes(`${userAuthorised}`) && key.includes('URL') && key.includes('URL').length > 0) {
+            let urlActive = cookies[`URL${userAuthorised}`];
+            imgNameActive.src = urlActive;
         }
     }
 
@@ -56,7 +66,7 @@ function getActiveUsers() {
             userNameActive.textContent = userAuthorised;
         }
     }
-
+    divNumActiveUsers.textContent = `Кол-во активных кроме нас: ${NumActiveUsers}`;
     let template = document.getElementById('template');
     var templateSource = template.innerHTML;
     var rend = Handlebars.compile(templateSource);
@@ -75,7 +85,7 @@ function getNumber() {
     let cookiesAfterSend = getCookies();
 
     if (Number(cookiesAfterSend[`msgNumber${sessionStorage.getItem('active')}`] > 0)) {
-        return Number(cookiesAfterSend[`msgNumber${sessionStorage.getItem('active')}`]);
+        return Number(cookiesAfterSend[`msgNumber${sessionStorage.getItem('active')}`]) + 1;
     } else {
         return 1;
     }
@@ -109,12 +119,16 @@ function render(data) {
         let span = document.createElement('span');
         let span2 = document.createElement('span');
         let p = document.createElement('p');
+        let img = document.createElement('img');
+        img.className = 'uses__img--msg';
         span.textContent = data[y].name;
         span2.textContent = data[y].date;
         p.textContent = data[y].msg;
+        img.src = data[y].url;
         div.appendChild(span);
         div.appendChild(span2);
         div.appendChild(p);
+        div.appendChild(img);
         wrapperMessage.appendChild(div);
     }
 
@@ -131,6 +145,15 @@ function getComment(name, num) {
     }
 }
 
+function getUrl(name) {
+    let cookiesForUrl = getCookies();
+
+    for (key in cookiesForUrl) {
+        if (key.includes(`${name}`) && key.includes('URL')) {
+            return cookiesForUrl[`URL${name}`];
+        }
+    }
+}
 
 function getDataFromCookies() {
 
@@ -158,11 +181,13 @@ function getDataFromCookies() {
 
                 let keyParse = key.split(`date${w}`);
                 let msg = getComment(keyParse[1], w);
+                let url2 = getUrl(`${keyParse[1]}`);
 
                 arrayMessage.messageUsers.push({
                     date: `${cookie[`date${w}${keyParse[1]}`]}`,
                     name: `${keyParse[1]}`,
-                    msg: `${msg}`
+                    msg: `${msg}`,
+                    url: `${url2}`
                 });
             }
         }
@@ -177,11 +202,12 @@ setInterval(() => {
 }, 3000);
 
 
+let userImgActive;
 
 setInterval(() => {
     if (authPage.style.display === 'none') {
 
-        var userImgActive = document.querySelector('.users__img--active');
+        userImgActive = document.querySelector('.users__img--active');
 
         userImgActive.addEventListener('click', (e) => {
             popup.style.display = 'block';
@@ -255,6 +281,7 @@ popupSave.addEventListener('click', () => {
     }
 
     document.cookie = `URL${sessionStorage.getItem('active')}=${url}`;
+    userImgActive.src = url;
 
     popup.style.display = 'none';
 })

@@ -78,6 +78,8 @@
 
     <div class="container">
       <div class="wrapper-left">
+      	<div class="users__number">   		
+      	</div>
         <ul class="users__list users__list--active">
           <li class="users__item users__item--active">
             <img class="users__img users__img--active" src="" alt="" width="150" height="150">
@@ -86,7 +88,7 @@
           <script id="template" type="text/x-handlebars-template">
           {{#each activeUsers}}
           <li class="users__item">
-            <img class="users__img" src="" alt="" width="100" height="100">
+            <img class="users__img users__img--msg" src="{{url}}" alt="" width="100" height="100">
             <h2 class="users__name">{{name}}</h2>
           </li>
           {{/each}}

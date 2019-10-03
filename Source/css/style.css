@@ -175,3 +175,16 @@ body {
 .popup__img-save {
 	width: 30%;
 }
+
+.uses__img--msg {
+	width: 80px;
+	height: 80px;
+}
+
+.users__number {
+	width: 100px;
+    height: 50px;
+    font-size: 18px;
+    color: #ffffff;
+    text-align: end;
+}
