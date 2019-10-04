@@ -136,11 +136,11 @@ function render(data) {
 
 
 function getComment(name, num) {
-    let cook = getCookies();
+    let cookiesForComments = getCookies();
 
-    for (key in cook) {
+    for (key in cookiesForComments) {
         if (key.includes(`${num}`) && key.includes(`${name}`) && key.includes('comment')) {
-            return cook[`comment${num}${name}`];
+            return cookiesForComments[`comment${num}${name}`];
         }
     }
 }
